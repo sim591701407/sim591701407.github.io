@@ -142,7 +142,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/sim591701407/LFMpic/master/32.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sim591701407/LFMpic/master/33.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/sim591701407/LFMpic/master/34.png">
-<meta property="og:updated_time" content="2020-09-15T05:33:15.644Z">
+<meta property="og:updated_time" content="2020-09-15T05:46:55.864Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="LFM推荐算法在资讯推荐中的简单应用">
 <meta name="twitter:description" content="背景知识每个用户（user）浏览客户端资讯新闻时都会留下行为数据，根据用户对稿件的部分行为数据可以推测出，任意稿件对用户的吸引程度。 比如张三喜欢的新闻资讯带有时政、流行、娱乐等元素（latent factor），如果一篇新闻稿件（item）带有这些元素，那么就将这篇稿件推荐给该用户，也就是用元素去连接用户和资讯文章。每个人对不同的元素偏好不同，而每篇稿件包含的元素也不一样。">
@@ -416,7 +416,7 @@
 <p>在这个例子里面也可以看出用户7和用户8有强的相似性：</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/11.png" alt="/var/folders/l5/5pg0lb0s58nbgh9zclcr8vs00000gn/T/com.microsoft.Word/WebArchiveCopyPasteTempFiles/p202">从推荐的结果来看，正好推荐的是对方评分较高的文章：</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/12.png" alt="img"></p>
-<h1 id="第二部分-正二八经儿实践"><a href="#第二部分-正二八经儿实践" class="headerlink" title="第二部分 正二八经儿实践"></a><strong>第二部分</strong> <strong>正二八经儿实践</strong></h1><h2 id="一、代码理论模型"><a href="#一、代码理论模型" class="headerlink" title="一、代码理论模型"></a><strong>一、代码理论模型</strong></h2><p><strong>1.LFM</strong></p>
+<h1 id="第二部分-正二八经儿实践"><a href="#第二部分-正二八经儿实践" class="headerlink" title="第二部分 正二八经儿实践"></a><strong>第二部分 正二八经儿实践</strong></h1><h2 id="一、代码理论模型"><a href="#一、代码理论模型" class="headerlink" title="一、代码理论模型"></a><strong>一、代码理论模型</strong></h2><p><strong>1.LFM</strong></p>
 <p>对于一个给定的用户行为数据集（数据集包含的是所有的user, 所有的item，以及每个user有过行为的item列表），使用LFM对其建模后，我们可以得到如下图所示的模型：（假设数据集中有3个user, 4个item, LFM建模的分类数为4）</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/13.png" alt="img"></p>
 <p>R矩阵是user-item矩阵，矩阵值Rij表示的是user i 对item j的兴趣度，这正是我们要求的值。对于一个user来说，当计算出他对所有item的兴趣度后，就可以进行排序并作出推荐。LFM算法从数据集中抽取出若干主题，作为user和item之间连接的桥梁，将R矩阵表示为P矩阵和Q矩阵相乘。其中P矩阵是user-class矩阵，矩阵值Pij表示的是user i对class j的兴趣度；Q矩阵式class-item矩阵，矩阵值Qij表示的是item j在class i中的权重，权重越高越能作为该类的代表。所以LFM根据如下公式来计算用户U对物品I的兴趣度</p>
@@ -441,7 +441,7 @@
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/19.png" alt="img"></p>
 <p><strong>2.Kmeans</strong></p>
 <p>K-Means算法的基本思想是初始随机给定K个簇中心，按照最邻近原则把待分类样本点分到各个簇。然后按平均法重新计算各个簇的质心，从而确定新的簇心。一直迭代，直到簇心的移动距离小于某个给定的值。<br> K-Means聚类算法主要分为三个步骤：<br> (1)第一步是为待聚类的点寻找聚类中心<br> (2)第二步是计算每个点到聚类中心的距离，将每个点聚类到离该点最近的聚类中去<br> (3)第三步是计算每个聚类中所有点的坐标平均值，并将这个平均值作为新的聚类中心<br> (4)反复执行(2)、(3)，直到聚类中心不再进行大范围移动或者聚类次数达到要求为止</p>
-<h2 id="二、-思路分析和遇到的问题"><a href="#二、-思路分析和遇到的问题" class="headerlink" title="二、**思路分析和遇到的问题**"></a><strong>二、**</strong>思路分析和遇到的问题**</h2><p>1.根据数据集初始化P和Q矩阵</p>
+<h2 id="二、思路分析和遇到的问题"><a href="#二、思路分析和遇到的问题" class="headerlink" title="二、思路分析和遇到的问题"></a><strong>二、思路分析和遇到的问题</strong></h2><p>1.根据数据集初始化P和Q矩阵</p>
 <p>这个初始化其实耗费了巨量的写代码时间，我的思路是</p>
 <p>（1）对于P矩阵，对每一个用户计算其自己评分的平均值，然后用户对每个class的评分就以平均值为基础进行正态分布的随机值取值。</p>
 <p>（2）对于Q的初始化前前后后做了很多工作：一开始就是以所有评分的平均值进行正态随机值（显然这和理论不符合，理论上Q是概率矩阵，也就是某个item所有class加起来要为1，但一开始就先简单赋予初值了）。后来结合itemAtrribute的文件，首先对这个文件里的item进行聚类（使用kmean），对于聚类结果我的利用方式有两种：</p>
@@ -453,14 +453,14 @@
 <p>正式讲代码之前想说一下过程中碰到的一些问题：</p>
 <p>\1.  首先第一个关于代码的速度问题，python的方便快捷确实让我在写代码过程中十分愉悦，但是大数据量下的长时间需要我们考虑并行等加速手段，这时候就有点苦恼了，尝试自己写了几个多线程来加速但是发现相对于串行真的没有提升，看到了python官方的一些调用其自己的多线程的东西还没加进去。一些C++中常用的方式比如mpi openmp等我也还没具体查阅python的用法，这点还需要后续补充。</p>
 <p>\2.  第二个关于迭代中对于参数优化梯度下降也有一些问题，一开始简单初始化就很随意按照公式优化参数，没有问题，准确率也是正常上升。但是后边真正认真初始化后反而有些问题凸显出来了，首先由于和为1的限制导致Q矩阵实际上很多数特别小（相对于P矩阵，我把两者都放在0~1的范围内了，所以简单初始化两者差不多），所以真正按照公式对两者参数优化就会发现，优化个一轮大量出现predict_score几百的现象（predict_score是函数，用来算损失函数时候算预测值的，就是把对应user和item的150个class加起来乘以100就是score），一开始我一直想不明白为啥Q和为1以后会超出100，后来想到了因为优化的尺度问题，一边全是0.1精度的数，一遍大部分0.001，用同样的alpha和lamda就有问题，对于P矩阵很好但是Q矩阵的话，只要一轮和为1的条件就被大大破坏，结果自然而然十分滑稽。</p>
-<h2 id="三、-具体代码分析"><a href="#三、-具体代码分析" class="headerlink" title="三、**具体代码分析**"></a><strong>三、**</strong>具体代码分析**</h2><p><strong>1.kmeans**</strong>聚类**</p>
+<h2 id="三、具体代码分析"><a href="#三、具体代码分析" class="headerlink" title="三、具体代码分析"></a><strong>三、具体代码分析</strong></h2><p><strong>1.kmeans聚类</strong></p>
 <p>具体到kmeans的实现，这里数据量太大，所以借用Python的scikit-learn 提供了MiniBatchKMeans算法，大致思想就是对数据进行抽样，每次不使用所有的数据来计算，这就会导致准确率的损失。</p>
 <p>Mini Batch K-Means算法是K-Means算法的变种，采用小批量的数据子集减小计算时间，同时仍试图优化目标函数，这里所谓的小批量是指每次训练算法时所随机抽取的数据子集，采用这些随机产生的子集进行训练算法，大大减小了计算时间，与其他算法相比，减少了k-均值的收敛时间，小批量k-均值产生的结果，一般只略差于标准算法。</p>
 <p>该算法的迭代步骤有两步：<br> 1：从数据集中随机抽取一些数据形成小批量，把他们分配给最近的质心<br> 2：更新质心</p>
 <p> 与K均值算法相比，数据的更新是在每一个小的样本集上。对于每一个小批量，通过计算平均值得到更新质心，并把小批量里的数据分配给该质心，随着迭代次数的增加，这些质心的变化是逐渐减小的，直到质心稳定或者达到指定的迭代次数，停止计算Mini Batch K-Means比K-Means有更快的 收敛速度，但同时也降低了聚类的效果，但是在实际项目中却表现得不明显</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/21.png" alt="img"></p>
 <p>Kmeans.py代码部分不多，调用MiniBatchKMeans通过改变不同的class分类结果的数量来计算SSE，结果也展示过了，得到结果F=250时候聚类效果最好。这个结果为我们的正式的要运行的test.py里的参数F=250提供支持，在test.py里开头也会有Kmeans的相关代码（和这里差不多，定下F=250），为的是把item分好类为后边初始化做准备。</p>
-<p><strong>2.test.py**</strong>里的主代码讲解**</p>
+<p><strong>2.test.py里的主代码讲解</strong></p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/22.png" alt="img"></p>
 <p>一开始定义了需要的参数变量</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/23.png" alt="img"></p>
@@ -468,7 +468,7 @@
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/24.png" alt="img"></p>
 <p>这里是对train.txt的读取，制作成[userid，itemid，score]的list方便后面使用。注意的是这里加入了几个特别的操作，首先是对每个user评论过的·item会随机抽取一个作为测试集的东西，其他作为训练集。第二，对于评论数太少的user（小于500），借助itemattribute的聚类结果会加入一些item和分数来减少矩阵的稀疏。</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/25.png" alt="img"></p>
-<p><strong>关于kmeans**</strong>以及上文说过不再赘述，接下来进入核心代码部分：**</p>
+<p><strong>关于kmeans以及上文说过不再赘述，接下来进入核心代码部分：</strong></p>
 <p>1.首先对P的初始化，大致思路就是用某个user对某个类的评分高低计算其评分的平均值进行初始化</p>
 <p><img src="https://raw.githubusercontent.com/sim591701407/LFMpic/master/26.png" alt="img"></p>
 <p>首先对所有的user计算其自己评过分数的item的平均值</p>
@@ -666,7 +666,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景知识"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一部分LFM推荐算法背景"><span class="nav-number">2.</span> <span class="nav-text">第一部分LFM推荐算法背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二部分-正二八经儿实践"><span class="nav-number">3.</span> <span class="nav-text">第二部分 正二八经儿实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、代码理论模型"><span class="nav-number">3.1.</span> <span class="nav-text">一、代码理论模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、-思路分析和遇到的问题"><span class="nav-number">3.2.</span> <span class="nav-text">二、**思路分析和遇到的问题**</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、-具体代码分析"><span class="nav-number">3.3.</span> <span class="nav-text">三、**具体代码分析**</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、结果展示"><span class="nav-number">3.4.</span> <span class="nav-text">四、结果展示</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#背景知识"><span class="nav-number">1.</span> <span class="nav-text">背景知识</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第一部分LFM推荐算法背景"><span class="nav-number">2.</span> <span class="nav-text">第一部分LFM推荐算法背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第二部分-正二八经儿实践"><span class="nav-number">3.</span> <span class="nav-text">第二部分 正二八经儿实践</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、代码理论模型"><span class="nav-number">3.1.</span> <span class="nav-text">一、代码理论模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、思路分析和遇到的问题"><span class="nav-number">3.2.</span> <span class="nav-text">二、思路分析和遇到的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、具体代码分析"><span class="nav-number">3.3.</span> <span class="nav-text">三、具体代码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、结果展示"><span class="nav-number">3.4.</span> <span class="nav-text">四、结果展示</span></a></li></ol></li></ol></div>
             
 
           </div>
